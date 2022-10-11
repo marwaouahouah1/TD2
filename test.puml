@@ -1,0 +1,22 @@
+@startuml exo1
+interface FileSysteme {
+    +name: String
+    +getName(): String
+    +getContent(): FileSysteme
+    +getOwner(): Proprietaire
+    +getSize(): int
+    +appendContent(String):void
+
+}
+class FichierOrd
+FileSysteme <|-- FichierOrd 
+class Repertoire
+FileSysteme <|-- Repertoire
+Repertoire "*" *--> FileSysteme
+class Proprietaire{
+    +nom:String
+    -sunique: String
+}
+Proprietaire <--FileSysteme 
+@enduml
+
