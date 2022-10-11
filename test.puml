@@ -1,22 +1,76 @@
 @startuml exo1
-interface FileSysteme {
-    +name: String
+abstract class Composantlmpl {
+    -name: String "final"
+    +this(name:string, owner: Owner):Composantlmpl 
     +getName(): String
-    +getContent(): FileSysteme
-    +getOwner(): Proprietaire
-    +getSize(): int
-    +appendContent(String):void
-
+    +getOwner(): Owner
+    +setOwner(owner: Owner, recursie: boolean) : void
+    +equals(o: Object): boolean
+    +hashCode(): int
 }
-class FichierOrd
-FileSysteme <|-- FichierOrd 
-class Repertoire
-FileSysteme <|-- Repertoire
-Repertoire "*" *--> FileSysteme
-class Proprietaire{
+class Fichier {
+    content: StringBuilder
+    this(name:string, owner:Owner): Fichier
+    +getSize():int
+    +getComtent():string
+    +appendContent(content:string):void
+    isComposite():void
+    toString():string
+}
+Composantlmpl <|-- Fichier
+class Repertoire{
+    this(name:string, owner:Owner): Repertoire
+    +setOwner(owner: Owner, recursie: boolean) : void
+    +getSize():int
+    +getComtent():string
+    +appendContent(content:string):void
+    +getChildren():List<Composant>
+    +addChildren(c: Composant):void
+    +removeChildren(c: Composant):boolean
+    +removeChildren(c: List<Composant>):boolean
+    isComposite():void
+    toString():string
+}
+Composantlmpl <|-- Repertoire
+class Owner{
     +nom:String
-    -sunique: String
+    this(name:string): Owner
+    +equals(o: Object): boolean
+    +hashCode(): int
 }
-Proprietaire <--FileSysteme 
+Owner"-1 owner"<--*Composantlmpl
+interface Composite{
+    getChildren():List<T>
+    +addChildren(t: T):void
+    +removeChildren(t: T):boolean
+    +removeChildren(t: List<T>):boolean
+}
+Composite<|.. Repertoire
+class FSFactory{
+    INSTANCE: FSFactory = new FSFactory()"final"
+    -this():FSFactory
+    +getInstance():FSFactory
+    +createComposant(type:ComposantType,name:string,owner:Owner):Composant
+}
+interface Composant{
+    +getName(): String
+    +getOwner(): Owner
+    +setOwner(owner: Owner, recursie: boolean) : void
+    +getSize():int
+    +getComtent():string
+    +appendContent(content:string):void
+    isComposite():void
+   
+}
+FSFactory "creates"..> Composant
+Composant <|.. Composantlmpl
+Composant <|.. Fichier
+Composant "-children"<-- Repertoire
+Composant <|.. Repertoire
+enum ComposantType{
+    FICHIER, REPERTOIRE
+}
+FSFactory ..> ComposantType
+
 @enduml
 
